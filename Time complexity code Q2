@@ -1,0 +1,75 @@
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+
+class Chocolate:
+    def __init__(self, weight, price, type):
+        self.weight = weight
+        self.price = price
+        self.type = type
+
+def compare_chocolates(chocolate):
+    return chocolate.price
+
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left_half = merge_sort(arr[:mid])
+    right_half = merge_sort(arr[mid:])
+
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    merged = []
+    left_index = right_index = 0
+
+    while left_index < len(left) and right_index < len(right):
+        if compare_chocolates(left[left_index]) < compare_chocolates(right[right_index]):
+            merged.append(left[left_index])
+            left_index += 1
+        else:
+            merged.append(right[right_index])
+            right_index += 1
+
+    merged.extend(left[left_index:])
+    merged.extend(right[right_index:])
+
+    return merged
+
+def distribute_chocolates_iterative(chocolates, students):
+    chocolates_sorted = merge_sort(chocolates)
+    distribution = {}
+
+    for i in range(len(students)):
+        distribution[students[i]] = chocolates_sorted[i]
+
+    return distribution
+
+# Function to measure time complexity
+def measure_time_complexity(n):
+    chocolates = [Chocolate(i, i, 'type') for i in range(n)]
+    students = [f"Student {i}" for i in range(n)]
+    
+    start_time = time.time()
+    distribute_chocolates_iterative(chocolates, students)
+    end_time = time.time()
+    
+    return end_time - start_time
+
+# Varying the number of chocolates
+chocolates_range = np.arange(100, 2000, 100)
+execution_times = []
+
+for n in chocolates_range:
+    execution_time = measure_time_complexity(n)
+    execution_times.append(execution_time)
+
+# Plotting the results
+plt.plot(chocolates_range, execution_times, marker='o')
+plt.xlabel('Number of Chocolates')
+plt.ylabel('Execution Time (seconds)')
+plt.title('Time Complexity Analysis of Chocolate Distribution')
+plt.grid(True)
+plt.show()
